@@ -32,6 +32,8 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+        env:
+          # Optional repo secret (ideally a dedicated Neon branch). When unset,
+          # real-database tests are skipped.
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - run: pnpm build
-      - name: Validate compose file
-        run: docker compose config --quiet
