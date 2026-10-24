@@ -1,7 +1,15 @@
-import { Module } from '@nestjs/common';
+import { type DynamicModule, Module } from '@nestjs/common';
+import type { AppConfig } from './config.js';
+import { Database } from './database.js';
 import { HealthController } from './health.controller.js';
 
-@Module({
-  controllers: [HealthController],
-})
-export class AppModule {}
+@Module({})
+export class AppModule {
+  static register(config: AppConfig): DynamicModule {
+    return {
+      module: AppModule,
+      controllers: [HealthController],
+      providers: [{ provide: Database, useFactory: () => new Database(config.databaseUrl) }],
+    };
+  }
+}
