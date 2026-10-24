@@ -3,7 +3,9 @@
 ## Testing pyramid
 
 ### Unit tests
+
 Test pure domain behavior without a database:
+
 - State transition rules.
 - Retry/backoff calculations.
 - Workflow definition validation.
@@ -12,7 +14,9 @@ Test pure domain behavior without a database:
 - Execution status aggregation.
 
 ### Integration tests
+
 Use a real PostgreSQL instance, preferably through Testcontainers or Docker Compose:
+
 - Repository persistence and constraints.
 - Atomic task claiming.
 - Concurrent workers attempting the same task.
@@ -22,6 +26,7 @@ Use a real PostgreSQL instance, preferably through Testcontainers or Docker Comp
 - API validation and error responses.
 
 ### End-to-end tests
+
 - Submit a workflow through the API and observe completion.
 - Submit an invalid workflow and verify rejection.
 - Submit the same idempotency key twice.

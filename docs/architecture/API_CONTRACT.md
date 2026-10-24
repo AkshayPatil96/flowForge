@@ -7,9 +7,11 @@ Use OpenAPI generated from NestJS decorators and validate the generated contract
 ## Workflow definitions
 
 ### `POST /workflows`
+
 Create a workflow definition and its initial version.
 
 Request:
+
 ```json
 {
   "name": "order-processing",
@@ -28,20 +30,25 @@ Request:
 Response: `201 Created` with workflow ID and version.
 
 ### `GET /workflows`
+
 List workflow definitions with pagination.
 
 ### `GET /workflows/:workflowId`
+
 Return workflow metadata and current version.
 
 ### `GET /workflows/:workflowId/versions/:version`
+
 Return immutable version definition.
 
 ## Executions
 
 ### `POST /workflows/:workflowId/versions/:version/executions`
+
 Submit an execution. Require `Idempotency-Key` header.
 
 Request:
+
 ```json
 {
   "input": {
@@ -51,6 +58,7 @@ Request:
 ```
 
 Response: `202 Accepted`
+
 ```json
 {
   "executionId": "uuid",
@@ -60,23 +68,29 @@ Response: `202 Accepted`
 ```
 
 Behavior:
+
 - Same idempotency key and same request hash: return existing execution.
 - Same idempotency key with different request hash: return `409 Conflict`.
 - Invalid definition/input: return `400 Bad Request` or `422 Unprocessable Entity`, consistently documented.
 
 ### `GET /executions`
+
 List executions. Support pagination and filters such as `status`, `workflowId`, `createdAfter`, `createdBefore`.
 
 ### `GET /executions/:executionId`
+
 Return status, workflow version, timestamps, and sanitized output/error summary.
 
 ### `GET /executions/:executionId/steps`
+
 Return ordered step states and attempt summaries.
 
 ### `GET /executions/:executionId/steps/:stepKey/attempts`
+
 Return attempt history for a step.
 
 ### `POST /executions/:executionId/retry`
+
 Request manual retry for an eligible failed execution. Require authorization and an audit record.
 
 ## Operational endpoints

@@ -21,24 +21,30 @@ The project owner already has JavaScript/TypeScript and full-stack experience an
 ## Alternatives considered
 
 ### Python + FastAPI for the entire engine
+
 Pros:
+
 - Builds practical Python backend skill immediately.
 - Natural fit for future AI/data processing.
-Cons:
+  Cons:
 - Adds language learning to the hardest project concepts at the same time.
 - May slow the first proof of durable execution.
 
 ### Java + Spring Boot
+
 Pros:
+
 - Strong option for enterprise backend roles.
-Cons:
+  Cons:
 - Requires a larger upfront language/framework learning investment than the current project timeline allows.
 
 ### TypeScript + NestJS
+
 Pros:
+
 - Leverages existing proficiency.
 - Lets the project focus on correctness, transactions, recovery, testing, and operations.
-Cons:
+  Cons:
 - Does not by itself demonstrate Python backend capability; Python must be learned and evidenced separately.
 
 ## Consequences

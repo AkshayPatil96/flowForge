@@ -40,12 +40,14 @@ Do not force a monorepo tool on day one if it creates more setup work than value
 - Never commit secrets, production data, or local database volumes.
 
 Suggested branch naming:
+
 - `feat/workflow-submission`
 - `feat/worker-claiming`
 - `test/worker-crash-recovery`
 - `docs/architecture-decisions`
 
 Suggested commit style:
+
 - `feat: persist workflow executions`
 - `test: cover duplicate idempotency submissions`
 - `docs: clarify worker recovery semantics`
@@ -53,6 +55,7 @@ Suggested commit style:
 ## Minimum package scripts
 
 Adapt to chosen tooling:
+
 - `lint`
 - `format:check`
 - `typecheck`
@@ -65,6 +68,7 @@ Adapt to chosen tooling:
 ## Environment variables
 
 Provide names and safe examples in `.env.example`, not secrets:
+
 - `DATABASE_URL`
 - `API_PORT`
 - `LOG_LEVEL`
@@ -78,6 +82,7 @@ Validate configuration at startup. Avoid silently accepting invalid values.
 ## Weekly review
 
 At the end of each week:
+
 1. What acceptance criterion became true?
 2. Which failure scenario is still untested?
 3. What complexity did you add without evidence it was needed?

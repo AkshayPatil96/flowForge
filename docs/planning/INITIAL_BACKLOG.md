@@ -3,6 +3,7 @@
 Use these as GitHub issues. Each issue should have acceptance criteria and a test plan.
 
 ## Epic 0 — Repository and developer experience
+
 - [ ] Create monorepo or clearly separated apps/packages.
 - [ ] Add formatter, linter, type-check and test scripts.
 - [ ] Add Docker Compose for PostgreSQL.
@@ -11,6 +12,7 @@ Use these as GitHub issues. Each issue should have acceptance criteria and a tes
 - [ ] Document one-command local startup.
 
 ## Epic 1 — Domain model
+
 - [ ] Define execution and step enums.
 - [ ] Implement transition validation.
 - [ ] Implement retry policy value object.
@@ -18,6 +20,7 @@ Use these as GitHub issues. Each issue should have acceptance criteria and a tes
 - [ ] Add unit tests for invalid transitions.
 
 ## Epic 2 — Persistence
+
 - [ ] Create workflow definitions/version migrations.
 - [ ] Create executions/steps/attempts migrations.
 - [ ] Add repository methods.
@@ -26,6 +29,7 @@ Use these as GitHub issues. Each issue should have acceptance criteria and a tes
 - [ ] Add repository integration tests.
 
 ## Epic 3 — API
+
 - [ ] Create workflow definition endpoint.
 - [ ] Create execution submission endpoint.
 - [ ] Add Idempotency-Key behavior.
@@ -35,6 +39,7 @@ Use these as GitHub issues. Each issue should have acceptance criteria and a tes
 - [ ] Add request correlation ID.
 
 ## Epic 4 — Worker and reliability
+
 - [ ] Implement handler registry.
 - [ ] Implement atomic task claim.
 - [ ] Implement one-step execution and persisted attempt lifecycle.
@@ -46,6 +51,7 @@ Use these as GitHub issues. Each issue should have acceptance criteria and a tes
 - [ ] Add ambiguous side-effect test fixture.
 
 ## Epic 5 — Dashboard
+
 - [ ] List executions.
 - [ ] Filter by status/workflow.
 - [ ] Show execution detail and step timeline.
@@ -54,6 +60,7 @@ Use these as GitHub issues. Each issue should have acceptance criteria and a tes
 - [ ] Add loading, empty, error and unauthorized states.
 
 ## Epic 6 — Delivery and portfolio
+
 - [ ] Add structured logs.
 - [ ] Add basic metrics.
 - [ ] Add health/readiness endpoints.

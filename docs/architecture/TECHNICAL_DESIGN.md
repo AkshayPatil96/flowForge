@@ -7,7 +7,9 @@ Start as a modular monolith with separate API and worker processes. They share a
 ## 2. Components
 
 ### API service (NestJS)
+
 Responsibilities:
+
 - Validate requests.
 - Manage versioned workflow definitions.
 - Accept execution submissions.
@@ -17,7 +19,9 @@ Responsibilities:
 - Never run long workflow steps inside the HTTP request.
 
 ### Workflow domain module
+
 Responsibilities:
+
 - State machine and transition rules.
 - Retry policy calculation.
 - Eligibility rules.
@@ -28,7 +32,9 @@ Responsibilities:
 Keep this module as independent of NestJS as practical.
 
 ### Persistence module (PostgreSQL)
+
 Responsibilities:
+
 - Durable workflow definitions and versions.
 - Execution and step state.
 - Attempt history.
@@ -36,7 +42,9 @@ Responsibilities:
 - Constraints and transactions.
 
 ### Worker process
+
 Responsibilities:
+
 - Poll/claim eligible steps.
 - Execute registered handlers.
 - Record attempt start and result.
@@ -45,7 +53,9 @@ Responsibilities:
 - Exit safely on shutdown.
 
 ### Recovery process
+
 Responsibilities:
+
 - Detect expired leases or abandoned running attempts.
 - Mark attempts as abandoned/unknown as appropriate.
 - Requeue only according to documented recovery rules.
@@ -54,7 +64,9 @@ Responsibilities:
 For the MVP, recovery can be part of the worker process rather than a separate deployable service.
 
 ### Dashboard (Next.js)
+
 Responsibilities:
+
 - List workflow definitions and executions.
 - Show execution/step state, attempts, durations and sanitized errors.
 - Trigger permitted manual retries.
@@ -79,6 +91,7 @@ Do not hold a database transaction open while calling a slow external service.
 ## 4. State model
 
 ### Execution states
+
 - `PENDING`: accepted but not yet started.
 - `RUNNING`: at least one step is being processed.
 - `RETRY_WAIT`: no step is currently running; a retry is scheduled.
@@ -87,6 +100,7 @@ Do not hold a database transaction open while calling a slow external service.
 - `CANCELLED`: cancellation requested and safely finalized according to MVP rules, if cancellation is implemented.
 
 ### Step states
+
 - `PENDING`: eligible in the future after dependencies are met.
 - `READY`: eligible to claim.
 - `RUNNING`: a worker holds a valid lease.
@@ -100,6 +114,7 @@ Do not use `UNKNOWN` as a substitute for all worker crashes. Define precisely wh
 ## 5. Retry policy
 
 Initial policy fields:
+
 - `maxAttempts`
 - `initialDelayMs`
 - `maxDelayMs`
@@ -108,6 +123,7 @@ Initial policy fields:
 - optional jitter
 
 Requirements:
+
 - Bound maximum attempts.
 - Store attempt number and next eligible timestamp.
 - Avoid tight retry loops.
@@ -119,6 +135,7 @@ Requirements:
 Use a PostgreSQL transaction and an atomic claim pattern, potentially with `FOR UPDATE SKIP LOCKED`, to select eligible work and mark it claimed. Verify exact SQL and transaction behavior with integration tests.
 
 Lease metadata may include:
+
 - `lease_owner`
 - `lease_expires_at`
 - `heartbeat_at`
@@ -129,12 +146,14 @@ A lease reduces concurrent ownership but does not prevent a paused worker from l
 ## 7. Idempotency
 
 For execution submission:
+
 - Require or strongly encourage a client-supplied idempotency key.
 - Enforce uniqueness in the database within a defined scope.
 - Store a request hash so reuse of a key with different input can return a conflict.
 - Define retention for idempotency records.
 
 For task handlers:
+
 - Pass stable execution ID + step ID as a task idempotency context.
 - Side-effecting handlers should propagate idempotency keys to downstream systems where supported.
 - If the downstream system lacks idempotency support, define reconciliation or compensation; do not promise exactly-once effects.
@@ -153,6 +172,7 @@ For task handlers:
 ## 9. Observability
 
 Initial:
+
 - Structured JSON logs.
 - Request ID / correlation ID.
 - Execution ID, workflow ID, step ID, attempt ID in log context.
@@ -162,6 +182,7 @@ Initial:
 - Queue depth and oldest eligible task age.
 
 Later:
+
 - OpenTelemetry traces across API, worker and Python service.
 - Prometheus scraping and Grafana dashboards.
 - Alerting for stuck work and elevated failure rate.
@@ -169,6 +190,7 @@ Later:
 ## 10. Deployment topology
 
 Local:
+
 - Next.js UI
 - NestJS API
 - Worker process
@@ -177,6 +199,7 @@ Local:
 - Optional Python service in a later milestone
 
 Production demo:
+
 - API and worker as independently restartable processes/containers.
 - Managed PostgreSQL or a properly secured PostgreSQL deployment.
 - TLS and secrets management.

@@ -17,12 +17,14 @@ FlowForge provides durable workflow state, step-level execution history, bounded
 ## 3. Target users and jobs-to-be-done
 
 ### Primary persona: Backend developer
+
 - Wants to define a sequence of tasks through an API or TypeScript SDK.
 - Needs to inspect execution status and failure details.
 - Wants predictable retry and recovery behavior.
 - Needs a local development environment and clear integration contract.
 
 ### Secondary persona: Operator / maintainer
+
 - Wants to identify failed or stuck executions.
 - Needs execution history, attempt counts, timestamps, and error summaries.
 - Needs safe manual retry controls and operational health signals.
@@ -65,12 +67,14 @@ FlowForge provides durable workflow state, step-level execution history, bounded
 ## 7. Functional requirements
 
 ### Workflow definitions
+
 - FR-01: Create and retrieve a versioned workflow definition.
 - FR-02: A workflow definition contains ordered steps with stable step identifiers.
 - FR-03: Validate a definition before accepting it.
 - FR-04: A running execution uses an immutable definition version.
 
 ### Execution
+
 - FR-05: Submit an execution with JSON input.
 - FR-06: Return a stable execution ID.
 - FR-07: Track execution and step states.
@@ -79,6 +83,7 @@ FlowForge provides durable workflow state, step-level execution history, bounded
 - FR-10: Expose execution detail and ordered step history.
 
 ### Reliability
+
 - FR-11: Support bounded retry policies with delay/backoff.
 - FR-12: Support per-step timeout configuration.
 - FR-13: Recover work abandoned by a worker process.
@@ -89,6 +94,7 @@ FlowForge provides durable workflow state, step-level execution history, bounded
 - FR-18: Distinguish a task being retried from a task whose external side effect may have succeeded but whose result was not persisted.
 
 ### Operations and UI
+
 - FR-19: List executions with status and creation time.
 - FR-20: Filter executions by status and workflow.
 - FR-21: Show step timeline, attempt history, and errors.
@@ -120,6 +126,7 @@ FlowForge provides durable workflow state, step-level execution history, bounded
 ## 10. Success metrics
 
 MVP success is demonstrated by:
+
 - All core state-transition tests pass.
 - A worker-kill integration test proves recovery.
 - Duplicate submission test returns the same execution for the same idempotency key.
@@ -131,13 +138,13 @@ MVP success is demonstrated by:
 
 ## 11. Risks and mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Scope becomes too large | Freeze MVP scope; no visual editor, Kafka, or Kubernetes initially |
-| Retries duplicate side effects | Document at-least-once semantics; idempotency and reconciliation |
-| Concurrency bugs | Atomic claims, leases, constraints, deterministic integration tests |
-| Database becomes a bottleneck | Measure before adding Redis or Kafka |
-| Framework hides core concepts | Keep state machine and persistence boundaries explicit |
+| Risk                             | Mitigation                                                           |
+| -------------------------------- | -------------------------------------------------------------------- |
+| Scope becomes too large          | Freeze MVP scope; no visual editor, Kafka, or Kubernetes initially   |
+| Retries duplicate side effects   | Document at-least-once semantics; idempotency and reconciliation     |
+| Concurrency bugs                 | Atomic claims, leases, constraints, deterministic integration tests  |
+| Database becomes a bottleneck    | Measure before adding Redis or Kafka                                 |
+| Framework hides core concepts    | Keep state machine and persistence boundaries explicit               |
 | Project becomes a tutorial clone | Publish failure tests, design decisions, benchmarks, and limitations |
 
 ## 12. Open questions to resolve before implementation

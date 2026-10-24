@@ -3,6 +3,7 @@
 This is a starting point, not a final migration. Review constraints and indexes before implementation.
 
 ## workflow_definitions
+
 - `id` UUID primary key
 - `name` text
 - `description` text nullable
@@ -10,6 +11,7 @@ This is a starting point, not a final migration. Review constraints and indexes 
 - `updated_at` timestamptz
 
 ## workflow_versions
+
 - `id` UUID primary key
 - `workflow_id` UUID FK
 - `version` integer
@@ -21,6 +23,7 @@ This is a starting point, not a final migration. Review constraints and indexes 
 A running execution points to an immutable version. Do not mutate the definition used by an existing execution.
 
 ## workflow_executions
+
 - `id` UUID primary key
 - `workflow_version_id` UUID FK
 - `status` enum/text with check constraint
@@ -37,6 +40,7 @@ A running execution points to an immutable version. Do not mutate the definition
 Decide the idempotency scope before implementing the unique index.
 
 ## workflow_steps
+
 - `id` UUID primary key
 - `execution_id` UUID FK
 - `step_key` text
@@ -58,6 +62,7 @@ Decide the idempotency scope before implementing the unique index.
 - Unique (`execution_id`, `step_order`) for sequential MVP
 
 ## step_attempts
+
 - `id` UUID primary key
 - `step_id` UUID FK
 - `attempt_number` integer
@@ -72,6 +77,7 @@ Decide the idempotency scope before implementing the unique index.
 - Unique (`step_id`, `attempt_number`)
 
 ## Optional later tables
+
 - `execution_events`: append-only audit/event history.
 - `outbox_events`: reliable event publication.
 - `worker_heartbeats`: worker health and liveness.
@@ -79,6 +85,7 @@ Decide the idempotency scope before implementing the unique index.
 ## Index candidates
 
 Validate with query plans and workload:
+
 - `workflow_executions(status, created_at DESC)`
 - `workflow_steps(status, available_at)`
 - `workflow_steps(lease_expires_at)` for recovery scan
