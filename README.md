@@ -9,7 +9,7 @@ FlowForge is a portfolio-grade workflow engine that lets developers define and e
 
 ## Local development
 
-Prerequisites: Node.js 22+ (see `.nvmrc`), pnpm 10 (`corepack enable`), Docker.
+Prerequisites: Node.js 24 LTS (see `.nvmrc`), pnpm 11 (`corepack enable`), Docker.
 
 ```sh
 pnpm install

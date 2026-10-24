@@ -2,9 +2,9 @@
   "name": "flowforge",
   "private": true,
   "description": "Durable workflow orchestration for reliable multi-step jobs.",
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@11.28.8",
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "pnpm --filter @flowforge/api dev",
@@ -22,7 +22,7 @@
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.10",
-    "typescript": "^6.0.3",
+    "typescript": "~6.0.3",
     "typescript-eslint": "^8.72.0"
   }
 }
