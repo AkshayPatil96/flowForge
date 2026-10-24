@@ -9,32 +9,31 @@ FlowForge is a portfolio-grade workflow engine that lets developers define and e
 
 ## Local development
 
-Prerequisites: Node.js 24 LTS (see `.nvmrc`), pnpm 11 (`corepack enable`), Docker.
+Prerequisites: Node.js 24 LTS (see `.nvmrc`), pnpm 11 (`corepack enable`), a [Neon](https://neon.tech) PostgreSQL database.
 
 ```sh
 pnpm install
-cp .env.example .env   # optional; defaults work without it
-pnpm db:up             # start PostgreSQL and wait until healthy
-pnpm dev               # API on http://localhost:3000 (GET /health)
+cp .env.example .env   # then set DATABASE_URL to your Neon connection string
+pnpm dev               # API on http://localhost:3000
+curl localhost:3000/health   # {"status":"ok"}  process is up
+curl localhost:3000/ready    # {"status":"ok"}  database reachable (503 if not)
 ```
 
-| Command             | Purpose                               |
-| ------------------- | ------------------------------------- |
-| `pnpm lint`         | ESLint (type-aware)                   |
-| `pnpm format:check` | Prettier check (`pnpm format` to fix) |
-| `pnpm typecheck`    | `tsc --noEmit` in every package       |
-| `pnpm test`         | Vitest in every package               |
-| `pnpm build`        | Build every package                   |
-| `pnpm db:down`      | Stop PostgreSQL (data volume is kept) |
+| Command             | Purpose                                                    |
+| ------------------- | ---------------------------------------------------------- |
+| `pnpm lint`         | ESLint (type-aware)                                        |
+| `pnpm format:check` | Prettier check (`pnpm format` to fix)                      |
+| `pnpm typecheck`    | `tsc --noEmit` in every package                            |
+| `pnpm test`         | Vitest; real-database tests run only if `DATABASE_URL` set |
+| `pnpm build`        | Build every package                                        |
 
-CI (`.github/workflows/ci.yml`) runs install, format check, lint, type-check, tests and build on every push to `main` and every pull request.
+CI (`.github/workflows/ci.yml`) runs install, format check, lint, type-check, tests and build on every push to `main` and every pull request. Add a `DATABASE_URL` repository secret (ideally a dedicated Neon branch) to also run the real-database tests in CI.
 
 ### Layout
 
 ```text
-apps/api/   NestJS HTTP API (versioned routes under /api/v1, /health outside it)
+apps/api/   NestJS HTTP API (versioned routes under /api/v1; /health and /ready outside it)
 docs/       Product, architecture, engineering and planning docs
-compose.yaml  Local PostgreSQL
 ```
 
 The worker and shared `packages/*` arrive in later phases (see `docs/planning/ROADMAP.md`).
@@ -46,10 +45,10 @@ FlowForge is an educational, single-tenant-first orchestration engine. It is not
 ## Initial technology decisions
 
 - Core API and worker: TypeScript + NestJS
-- Durable source of truth: PostgreSQL
+- Durable source of truth: PostgreSQL (hosted on Neon, see ADR-002)
 - Initial task coordination: PostgreSQL-backed task claiming; introduce Redis only for a justified use case
 - Frontend: Next.js + TypeScript
-- Local environment: Docker Compose
+- Local environment: Node.js + hosted Neon database (no Docker required)
 - Tests: unit + integration + failure-recovery tests
 - CI: GitHub Actions
 - Observability: structured logs first; metrics/traces incrementally
@@ -68,6 +67,7 @@ Read in this order:
 7. `docs/planning/ROADMAP.md`
 8. `docs/engineering/DEFINITION_OF_DONE.md`
 9. `docs/architecture/ADR-001-core-stack.md`
+10. `docs/architecture/ADR-002-neon-postgres.md`
 
 ## First milestone
 

@@ -13,7 +13,7 @@ The project owner already has JavaScript/TypeScript and full-stack experience an
 - Use PostgreSQL as the durable source of truth.
 - Start with database-backed task claiming and explicit state transitions.
 - Use Next.js for the inspection dashboard after engine reliability tests pass.
-- Use Docker Compose for local development.
+- Use Docker Compose for local development. (Database superseded by ADR-002: Neon.)
 - Add Redis only for a concrete requirement.
 - Defer Kafka, Kubernetes, and a Python microservice until the core MVP passes its reliability gates.
 - Learn Python alongside the project; add a separate Python service only when it has a bounded, testable responsibility.
