@@ -4,8 +4,40 @@
 
 FlowForge is a portfolio-grade workflow engine that lets developers define and execute multi-step workflows, persist execution state, retry failed steps, and recover after worker restarts.
 
-> Status: Planning / pre-MVP  
+> Status: Phase 0 (project setup) complete / pre-MVP  
 > Primary goal: Demonstrate backend engineering depth: durable state, concurrency, idempotency, retries, failure recovery, testing, observability, and deployment.
+
+## Local development
+
+Prerequisites: Node.js 22+ (see `.nvmrc`), pnpm 10 (`corepack enable`), Docker.
+
+```sh
+pnpm install
+cp .env.example .env   # optional; defaults work without it
+pnpm db:up             # start PostgreSQL and wait until healthy
+pnpm dev               # API on http://localhost:3000 (GET /health)
+```
+
+| Command             | Purpose                               |
+| ------------------- | ------------------------------------- |
+| `pnpm lint`         | ESLint (type-aware)                   |
+| `pnpm format:check` | Prettier check (`pnpm format` to fix) |
+| `pnpm typecheck`    | `tsc --noEmit` in every package       |
+| `pnpm test`         | Vitest in every package               |
+| `pnpm build`        | Build every package                   |
+| `pnpm db:down`      | Stop PostgreSQL (data volume is kept) |
+
+CI (`.github/workflows/ci.yml`) runs install, format check, lint, type-check, tests and build on every push to `main` and every pull request.
+
+### Layout
+
+```text
+apps/api/   NestJS HTTP API (versioned routes under /api/v1, /health outside it)
+docs/       Product, architecture, engineering and planning docs
+compose.yaml  Local PostgreSQL
+```
+
+The worker and shared `packages/*` arrive in later phases (see `docs/planning/ROADMAP.md`).
 
 ## Product boundary
 
