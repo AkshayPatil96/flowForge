@@ -2,14 +2,16 @@
 
 Use these as GitHub issues. Each issue should have acceptance criteria and a test plan.
 
-## Epic 0 — Repository and developer experience
+Status: Epic 0 done (Phase 0, 2026-10-25). Next: Epic 1 (Phase 1).
 
-- [ ] Create monorepo or clearly separated apps/packages.
-- [ ] Add formatter, linter, type-check and test scripts.
-- [ ] Add Docker Compose for PostgreSQL.
-- [ ] Add `.env.example`; ensure real `.env` files are ignored.
-- [ ] Add GitHub Actions CI.
-- [ ] Document one-command local startup.
+## Epic 0 — Repository and developer experience ✅
+
+- [x] Create monorepo or clearly separated apps/packages. _pnpm workspace: `apps/*`, `packages/*`._
+- [x] Add formatter, linter, type-check and test scripts. _`format:check`, `lint`, `typecheck`, `test`, `build`._
+- [x] ~~Add Docker Compose for PostgreSQL.~~ Replaced by hosted Neon PostgreSQL (ADR-002); `/ready` verifies the connection.
+- [x] Add `.env.example`; ensure real `.env` files are ignored.
+- [x] Add GitHub Actions CI. _Install, audit, format, lint, type-check, test, build; green on `main`._
+- [x] Document one-command local startup. _README "Local development": `pnpm dev`._
 
 ## Epic 1 — Domain model
 
@@ -63,10 +65,10 @@ Use these as GitHub issues. Each issue should have acceptance criteria and a tes
 
 - [ ] Add structured logs.
 - [ ] Add basic metrics.
-- [ ] Add health/readiness endpoints.
+- [x] Add health/readiness endpoints. _`GET /health` (liveness), `GET /ready` (database check), done early in Phase 0._
 - [ ] Add production Docker build.
 - [ ] Deploy API and worker.
-- [ ] Write architecture diagram and ADRs.
+- [ ] Write architecture diagram and ADRs. _ADR-001 and ADR-002 written; diagram pending._
 - [ ] Record demo video.
 - [ ] Publish benchmark methodology/results.
 - [ ] Prepare interview explanation and known limitations.

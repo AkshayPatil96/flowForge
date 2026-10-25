@@ -27,7 +27,7 @@ curl localhost:3000/ready    # {"status":"ok"}  database reachable (503 if not)
 | `pnpm test`         | Vitest; real-database tests run only if `DATABASE_URL` set |
 | `pnpm build`        | Build every package                                        |
 
-CI (`.github/workflows/ci.yml`) runs install, format check, lint, type-check, tests and build on every push to `main` and every pull request. Add a `DATABASE_URL` repository secret (ideally a dedicated Neon branch) to also run the real-database tests in CI.
+CI (`.github/workflows/ci.yml`) runs install, dependency audit (high+), format check, lint, type-check, tests and build on every push to `main` and every pull request. Add a `DATABASE_URL` repository secret (ideally a dedicated Neon branch) to also run the real-database tests in CI.
 
 ### Layout
 
