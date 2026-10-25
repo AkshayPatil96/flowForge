@@ -1,5 +1,6 @@
-import { Controller, Get, Logger, ServiceUnavailableException } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { Database } from './db/database.js';
+import { ApiError } from './http/api-error.js';
 
 @Controller()
 export class HealthController {
@@ -18,9 +19,9 @@ export class HealthController {
     try {
       await this.db.ping();
     } catch (err) {
-      // Details go to logs only; clients get a generic status.
+      // Details go to logs only; clients get a generic message.
       this.logger.warn(`Database not ready: ${err instanceof Error ? err.message : String(err)}`);
-      throw new ServiceUnavailableException({ status: 'unavailable' });
+      throw new ApiError(503, 'DATABASE_UNAVAILABLE', 'Database is not reachable.');
     }
     return { status: 'ok' };
   }

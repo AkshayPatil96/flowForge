@@ -29,6 +29,14 @@ export default tseslint.config(
     },
   },
   {
+    // HTTP response bodies are untyped JSON; tests assert on their shape directly.
+    files: ['**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+    },
+  },
+  {
     files: ['**/*.{js,mjs,cjs}'],
     ...tseslint.configs.disableTypeChecked,
   },
