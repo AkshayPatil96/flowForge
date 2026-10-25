@@ -15,6 +15,9 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # DATABASE_URL is an environment secret of the CI environment (a dedicated
+    # Neon branch), so the job must opt into that environment to read it.
+    environment: CI
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -32,9 +35,17 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
+      # Annotation makes the test mode visible without reading job logs.
+      - name: Report database test mode
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -n "$DATABASE_URL" ]; then
+            echo "::notice::DATABASE_URL set: real-database tests will run"
+          else
+            echo "::warning::DATABASE_URL not set: real-database tests are skipped"
+          fi
       - run: pnpm test
         env:
-          # Optional repo secret (ideally a dedicated Neon branch). When unset,
-          # real-database tests are skipped.
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - run: pnpm build
