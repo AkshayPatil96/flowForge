@@ -12,6 +12,23 @@ export default tseslint.config(
     },
   },
   {
+    // Domain rules stay framework- and storage-independent (TECHNICAL_DESIGN §2).
+    files: ['apps/api/src/domain/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@nestjs/*', 'express', 'pg', 'kysely', '../*'],
+              message: 'src/domain must not depend on frameworks, storage or other layers.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.{js,mjs,cjs}'],
     ...tseslint.configs.disableTypeChecked,
   },
