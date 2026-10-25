@@ -1,6 +1,6 @@
 import { type DynamicModule, Module } from '@nestjs/common';
 import type { AppConfig } from './config.js';
-import { Database } from './database.js';
+import { Database } from './db/database.js';
 import { HealthController } from './health.controller.js';
 
 @Module({})

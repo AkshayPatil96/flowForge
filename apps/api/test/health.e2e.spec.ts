@@ -3,7 +3,7 @@ import type { Server } from 'node:http';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../src/app.js';
-import { Database } from '../src/database.js';
+import { Database } from '../src/db/database.js';
 
 // Port 1 refuses connections immediately, so /ready fails fast without a database.
 const UNREACHABLE_DB = 'postgresql://user:pass@127.0.0.1:1/flowforge';

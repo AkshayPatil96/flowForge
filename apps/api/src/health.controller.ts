@@ -1,5 +1,5 @@
 import { Controller, Get, Logger, ServiceUnavailableException } from '@nestjs/common';
-import { Database } from './database.js';
+import { Database } from './db/database.js';
 
 @Controller()
 export class HealthController {

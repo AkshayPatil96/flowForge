@@ -7,7 +7,8 @@
     "dev": "nest start --watch --env-file ../../.env",
     "start": "node --env-file-if-exists=../../.env dist/main.js",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:migrate": "nest build && node --env-file-if-exists=../../.env dist/db/migrate.js"
   },
   "dependencies": {
     "@nestjs/common": "^12.2.0",
