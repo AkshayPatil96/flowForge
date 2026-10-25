@@ -2,7 +2,7 @@
 
 Use these as GitHub issues. Each issue should have acceptance criteria and a test plan.
 
-Status: Epic 0 done (Phase 0, 2026-10-25). Next: Epic 1 (Phase 1).
+Status: Epic 0 done (Phase 0). Epic 1 done and the workflow-definition parts of Epics 2 and 3 done (Phase 1, 2026-10-25). Next: Phase 2, durable submission (executions, steps, idempotency).
 
 ## Epic 0 — Repository and developer experience ✅
 
@@ -13,32 +13,32 @@ Status: Epic 0 done (Phase 0, 2026-10-25). Next: Epic 1 (Phase 1).
 - [x] Add GitHub Actions CI. _Install, audit, format, lint, type-check, test, build; green on `main`._
 - [x] Document one-command local startup. _README "Local development": `pnpm dev`._
 
-## Epic 1 — Domain model
+## Epic 1 — Domain model ✅
 
-- [ ] Define execution and step enums.
-- [ ] Implement transition validation.
-- [ ] Implement retry policy value object.
-- [ ] Validate workflow definition schema.
-- [ ] Add unit tests for invalid transitions.
+- [x] Define execution and step enums. _`src/domain/workflow-status.ts`._
+- [x] Implement transition validation. _Explicit allow-list; anything else raises `INVALID_STATE_TRANSITION`._
+- [x] Implement retry policy value object. _Bounded attempts, capped exponential backoff, equal jitter._
+- [x] Validate workflow definition schema. _zod; unique step keys, 1-50 steps, unknown fields rejected._
+- [x] Add unit tests for invalid transitions. _Every from/to pair is checked._
 
 ## Epic 2 — Persistence
 
-- [ ] Create workflow definitions/version migrations.
+- [x] Create workflow definitions/version migrations. _`0001_workflow_definitions.sql`, immutable versions via trigger._
 - [ ] Create executions/steps/attempts migrations.
-- [ ] Add repository methods.
-- [ ] Add uniqueness constraints for workflow versions, step keys and idempotency.
+- [ ] Add repository methods. _Partial: workflow definitions/versions done; executions in Phase 2._
+- [ ] Add uniqueness constraints for workflow versions, step keys and idempotency. _Partial: workflow names and versions done; step keys and idempotency in Phase 2._
 - [ ] Add indexes based on initial query patterns.
-- [ ] Add repository integration tests.
+- [ ] Add repository integration tests. _Partial: schema constraints and workflow repository covered against Neon._
 
 ## Epic 3 — API
 
-- [ ] Create workflow definition endpoint.
+- [x] Create workflow definition endpoint. _Plus add-version, list, get and get-version endpoints._
 - [ ] Create execution submission endpoint.
 - [ ] Add Idempotency-Key behavior.
 - [ ] Create execution detail endpoint.
 - [ ] Create step and attempt history endpoints.
-- [ ] Standardize error response format.
-- [ ] Add request correlation ID.
+- [x] Standardize error response format. _`{ error: { code, message, details? }, requestId }`._
+- [x] Add request correlation ID. _`X-Request-Id` accepted or generated, echoed, logged._
 
 ## Epic 4 — Worker and reliability
 
@@ -63,7 +63,7 @@ Status: Epic 0 done (Phase 0, 2026-10-25). Next: Epic 1 (Phase 1).
 
 ## Epic 6 — Delivery and portfolio
 
-- [ ] Add structured logs.
+- [ ] Add structured logs. _Partial: JSON logs with request IDs; execution/step/attempt IDs come with the worker._
 - [ ] Add basic metrics.
 - [x] Add health/readiness endpoints. _`GET /health` (liveness), `GET /ready` (database check), done early in Phase 0._
 - [ ] Add production Docker build.

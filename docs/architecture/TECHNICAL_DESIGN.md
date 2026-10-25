@@ -111,6 +111,33 @@ Do not hold a database transaction open while calling a slow external service.
 
 Do not use `UNKNOWN` as a substitute for all worker crashes. Define precisely when the system cannot know whether a side effect occurred.
 
+### Allowed transitions (Implemented: `apps/api/src/domain/workflow-status.ts`)
+
+Any transition not listed is rejected with `INVALID_STATE_TRANSITION`.
+
+| Execution from | To                                               | Why                  |
+| -------------- | ------------------------------------------------ | -------------------- |
+| `PENDING`      | `RUNNING`, `CANCELLED`                           |                      |
+| `RUNNING`      | `RETRY_WAIT`, `COMPLETED`, `FAILED`, `CANCELLED` |                      |
+| `RETRY_WAIT`   | `RUNNING`, `CANCELLED`                           |                      |
+| `FAILED`       | `PENDING`                                        | Manual retry (AC-09) |
+| `COMPLETED`    | —                                                | Terminal             |
+| `CANCELLED`    | —                                                | Terminal             |
+
+| Step from    | To                                  | Why                                                         |
+| ------------ | ----------------------------------- | ----------------------------------------------------------- |
+| `PENDING`    | `READY`                             | Previous step succeeded                                     |
+| `READY`      | `RUNNING`                           | Claimed by a worker                                         |
+| `RUNNING`    | `SUCCEEDED`, `RETRY_WAIT`, `FAILED` | Handler outcome                                             |
+| `RUNNING`    | `UNKNOWN`                           | Worker lost after the handler may have caused a side effect |
+| `RUNNING`    | `READY`                             | Recovery: lease expired before the handler started          |
+| `RETRY_WAIT` | `READY`                             | Backoff elapsed                                             |
+| `UNKNOWN`    | `READY`, `SUCCEEDED`, `FAILED`      | Reconciliation: safe to re-run, confirmed done, or give up  |
+| `FAILED`     | `READY`                             | Manual retry                                                |
+| `SUCCEEDED`  | —                                   | Terminal                                                    |
+
+The exact conditions for `RUNNING -> UNKNOWN` versus `RUNNING -> READY` are defined with the recovery design in Phase 4.
+
 ## 5. Retry policy
 
 Initial policy fields:

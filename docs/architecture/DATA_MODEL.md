@@ -1,26 +1,28 @@
 # Data Model (Logical)
 
-This is a starting point, not a final migration. Review constraints and indexes before implementation.
+This is a starting point, not a final migration. Review constraints and indexes before implementation. Tables marked **Implemented** match `apps/api/migrations/`; that SQL is the source of truth.
 
-## workflow_definitions
+Conventions: UUID keys default to `gen_random_uuid()` (built in since PostgreSQL 13, no extension); timestamps are `timestamptz`; constraints are named so the API can map violations to error codes.
+
+## workflow_definitions (Implemented, 0001)
 
 - `id` UUID primary key
-- `name` text
+- `name` text, unique (`workflow_definitions_name_key`)
 - `description` text nullable
 - `created_at` timestamptz
 - `updated_at` timestamptz
 
-## workflow_versions
+## workflow_versions (Implemented, 0001)
 
 - `id` UUID primary key
-- `workflow_id` UUID FK
-- `version` integer
+- `workflow_id` UUID FK -> `workflow_definitions.id`
+- `version` integer, check `version > 0`
 - `definition_json` jsonb
-- `input_schema_json` jsonb nullable
+- `input_schema_json` jsonb nullable — deferred to Phase 2, when execution input is validated
 - `created_at` timestamptz
-- Unique (`workflow_id`, `version`)
+- Unique (`workflow_id`, `version`); also serves latest-version lookups
 
-A running execution points to an immutable version. Do not mutate the definition used by an existing execution.
+A running execution points to an immutable version. Do not mutate the definition used by an existing execution. Enforced by a `BEFORE UPDATE` trigger that rejects any update to `workflow_versions`. New version numbers are allocated while holding a row lock on the workflow definition, so concurrent requests get distinct, consecutive numbers.
 
 ## workflow_executions
 

@@ -4,7 +4,7 @@
 
 FlowForge is a portfolio-grade workflow engine that lets developers define and execute multi-step workflows, persist execution state, retry failed steps, and recover after worker restarts.
 
-> Status: Phase 0 (project setup) complete / pre-MVP  
+> Status: Phase 1 (domain model + workflow definitions) complete / pre-MVP  
 > Primary goal: Demonstrate backend engineering depth: durable state, concurrency, idempotency, retries, failure recovery, testing, observability, and deployment.
 
 ## Local development
@@ -14,29 +14,53 @@ Prerequisites: Node.js 24 LTS (see `.nvmrc`), pnpm 11 (`corepack enable`), a [Ne
 ```sh
 pnpm install
 cp .env.example .env   # then set DATABASE_URL to your Neon connection string
+pnpm db:migrate        # apply SQL migrations (safe to re-run)
 pnpm dev               # API on http://localhost:3000
 curl localhost:3000/health   # {"status":"ok"}  process is up
 curl localhost:3000/ready    # {"status":"ok"}  database reachable (503 if not)
 ```
 
+Create and read a workflow:
+
+```sh
+curl -X POST localhost:3000/api/v1/workflows -H 'Content-Type: application/json' -d '{
+  "name": "order-processing",
+  "definition": { "steps": [
+    { "key": "validate-order", "handler": "validateOrder" },
+    { "key": "process-payment", "handler": "processPayment", "retryPolicy": { "maxAttempts": 5 } }
+  ] }
+}'
+curl localhost:3000/api/v1/workflows
+curl localhost:3000/api/v1/workflows/<id>/versions/1
+```
+
+See [API_CONTRACT.md](docs/architecture/API_CONTRACT.md) for every endpoint, rule and error code.
+
 | Command             | Purpose                                                    |
 | ------------------- | ---------------------------------------------------------- |
-| `pnpm lint`         | ESLint (type-aware)                                        |
+| `pnpm db:migrate`   | Apply pending `apps/api/migrations/*.sql`                  |
+| `pnpm lint`         | ESLint (type-aware, plus domain-layer import boundaries)   |
 | `pnpm format:check` | Prettier check (`pnpm format` to fix)                      |
 | `pnpm typecheck`    | `tsc --noEmit` in every package                            |
 | `pnpm test`         | Vitest; real-database tests run only if `DATABASE_URL` set |
 | `pnpm build`        | Build every package                                        |
 
-CI (`.github/workflows/ci.yml`) runs install, dependency audit (high+), format check, lint, type-check, tests and build on every push to `main` and every pull request. Add a `DATABASE_URL` repository secret (ideally a dedicated Neon branch) to also run the real-database tests in CI.
+CI (`.github/workflows/ci.yml`) runs install, dependency audit (high+), format check, lint, type-check, tests and build on every push to `main` and every pull request. Real-database tests use the `DATABASE_URL` secret of the `CI` GitHub environment (a dedicated Neon branch); tests migrate it first and clean up their own rows.
 
 ### Layout
 
 ```text
-apps/api/   NestJS HTTP API (versioned routes under /api/v1; /health and /ready outside it)
-docs/       Product, architecture, engineering and planning docs
+apps/api/
+  migrations/     SQL migrations (forward-only)
+  src/domain/     State transitions, retry policy, definition rules (no framework imports)
+  src/db/         Kysely database, schema types, migrator
+  src/http/       Error format, request IDs, input validation
+  src/workflows/  Workflow definition endpoints and repository
+  test/           HTTP and database integration tests
+docs/             Product, architecture (ADRs), engineering and planning docs
 ```
 
-The worker and shared `packages/*` arrive in later phases (see `docs/planning/ROADMAP.md`).
+The worker arrives in Phase 3 (see `docs/planning/ROADMAP.md`).
 
 ## Product boundary
 
@@ -68,6 +92,7 @@ Read in this order:
 8. `docs/engineering/DEFINITION_OF_DONE.md`
 9. `docs/architecture/ADR-001-core-stack.md`
 10. `docs/architecture/ADR-002-neon-postgres.md`
+11. `docs/architecture/ADR-003-persistence-and-validation.md`
 
 ## First milestone
 
