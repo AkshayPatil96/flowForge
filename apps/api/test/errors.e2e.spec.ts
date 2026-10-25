@@ -10,7 +10,11 @@ describe('error responses and request IDs', () => {
   let app: INestApplication<Server>;
 
   beforeAll(async () => {
-    app = await createApp({ apiPort: 0, databaseUrl: 'postgresql://u:p@127.0.0.1:1/x' });
+    app = await createApp({
+      apiPort: 0,
+      logFormat: 'json',
+      databaseUrl: 'postgresql://u:p@127.0.0.1:1/x',
+    });
     await app.init();
   });
 

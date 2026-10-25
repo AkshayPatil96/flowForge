@@ -35,7 +35,7 @@ describe.runIf(process.env.DATABASE_URL)('workflow definitions API', () => {
 
   beforeAll(async () => {
     const databaseUrl = process.env.DATABASE_URL ?? '';
-    app = await createApp({ apiPort: 0, databaseUrl });
+    app = await createApp({ apiPort: 0, logFormat: 'json', databaseUrl });
     await app.init();
     database = new Database(databaseUrl);
   });

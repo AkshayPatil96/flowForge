@@ -1,6 +1,10 @@
+export type LogFormat = 'json' | 'pretty';
+
 export interface AppConfig {
   apiPort: number;
   databaseUrl: string;
+  // json for deployed environments (log tooling), pretty for local development.
+  logFormat: LogFormat;
 }
 
 // Fail fast on bad config instead of silently falling back.
@@ -20,5 +24,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     throw new Error('Invalid DATABASE_URL (expected postgres:// or postgresql:// URL)');
   }
 
-  return { apiPort, databaseUrl };
+  const logFormat = env.LOG_FORMAT ?? 'json';
+  if (logFormat !== 'json' && logFormat !== 'pretty') {
+    throw new Error(`Invalid LOG_FORMAT: "${logFormat}" (expected json or pretty)`);
+  }
+
+  return { apiPort, databaseUrl, logFormat };
 }

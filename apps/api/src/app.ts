@@ -8,7 +8,7 @@ import { requestIdMiddleware } from './http/request-id.js';
 
 export async function createApp(config: AppConfig): Promise<INestApplication<Server>> {
   const app = await NestFactory.create<INestApplication<Server>>(AppModule.register(config), {
-    logger: new ConsoleLogger({ json: true }),
+    logger: new ConsoleLogger({ json: config.logFormat === 'json' }),
   });
   // Registered before the body parser, so even 413/malformed-JSON errors get an ID.
   app.use(requestIdMiddleware);

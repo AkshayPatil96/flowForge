@@ -12,7 +12,7 @@ describe('health endpoints without a reachable database', () => {
   let app: INestApplication<Server>;
 
   beforeAll(async () => {
-    app = await createApp({ apiPort: 0, databaseUrl: UNREACHABLE_DB });
+    app = await createApp({ apiPort: 0, logFormat: 'json', databaseUrl: UNREACHABLE_DB });
     await app.init();
   });
 
@@ -36,7 +36,7 @@ describe('health endpoints without a reachable database', () => {
 
 describe('shutdown', () => {
   it('closes the database pool when the app closes', async () => {
-    const app = await createApp({ apiPort: 0, databaseUrl: UNREACHABLE_DB });
+    const app = await createApp({ apiPort: 0, logFormat: 'json', databaseUrl: UNREACHABLE_DB });
     await app.init();
     const db = app.get(Database);
     await app.close();
@@ -49,7 +49,11 @@ describe.runIf(process.env.DATABASE_URL)('health endpoints with the real databas
   let app: INestApplication<Server>;
 
   beforeAll(async () => {
-    app = await createApp({ apiPort: 0, databaseUrl: process.env.DATABASE_URL ?? '' });
+    app = await createApp({
+      apiPort: 0,
+      logFormat: 'json',
+      databaseUrl: process.env.DATABASE_URL ?? '',
+    });
     await app.init();
   });
 

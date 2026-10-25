@@ -4,8 +4,20 @@ import { loadConfig } from './config.js';
 const DATABASE_URL = 'postgresql://user:secret@localhost:5432/flowforge';
 
 describe('loadConfig', () => {
-  it('defaults API_PORT to 3000', () => {
-    expect(loadConfig({ DATABASE_URL })).toEqual({ apiPort: 3000, databaseUrl: DATABASE_URL });
+  it('defaults API_PORT to 3000 and LOG_FORMAT to json', () => {
+    expect(loadConfig({ DATABASE_URL })).toEqual({
+      apiPort: 3000,
+      databaseUrl: DATABASE_URL,
+      logFormat: 'json',
+    });
+  });
+
+  it('accepts LOG_FORMAT=pretty for local development', () => {
+    expect(loadConfig({ DATABASE_URL, LOG_FORMAT: 'pretty' }).logFormat).toBe('pretty');
+  });
+
+  it.each(['JSON', 'text', ''])('rejects LOG_FORMAT=%j', (value) => {
+    expect(() => loadConfig({ DATABASE_URL, LOG_FORMAT: value })).toThrow(/Invalid LOG_FORMAT/);
   });
 
   it('parses a valid API_PORT', () => {
