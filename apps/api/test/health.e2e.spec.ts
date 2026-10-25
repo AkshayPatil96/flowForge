@@ -3,6 +3,7 @@ import type { Server } from 'node:http';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../src/app.js';
+import { Database } from '../src/database.js';
 
 // Port 1 refuses connections immediately, so /ready fails fast without a database.
 const UNREACHABLE_DB = 'postgresql://user:pass@127.0.0.1:1/flowforge';
@@ -30,6 +31,16 @@ describe('health endpoints without a reachable database', () => {
 
   it('operational endpoints are not duplicated under /api/v1', async () => {
     await request(app.getHttpServer()).get('/api/v1/health').expect(404);
+  });
+});
+
+describe('shutdown', () => {
+  it('closes the database pool when the app closes', async () => {
+    const app = await createApp({ apiPort: 0, databaseUrl: UNREACHABLE_DB });
+    await app.init();
+    const db = app.get(Database);
+    await app.close();
+    expect(db.pool.ended).toBe(true);
   });
 });
 
