@@ -1,3 +1,8 @@
 packages:
   - apps/*
   - packages/*
+
+overrides:
+  # GHSA-q7qp-rjg7-q26m (DoS). @nestjs/platform-express 12.2.0 pins multer
+  # 2.4.0; drop this override once Nest ships a release with >=2.5.0.
+  multer: ^2.5.0
