@@ -78,6 +78,10 @@ export class WorkflowRepository {
         .executeTakeFirst();
       if (!workflow) return undefined;
 
+      // Must be a separate statement: it takes a fresh snapshot after the lock
+      // is granted, so it sees the version the previous holder committed. As a
+      // subquery of the locking SELECT it would use the pre-wait snapshot and
+      // reuse a number (verified by the concurrent test).
       const { max } = await trx
         .selectFrom('workflowVersions')
         .select((eb) => eb.fn.max('version').as('max'))
